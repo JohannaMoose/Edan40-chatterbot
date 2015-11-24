@@ -80,8 +80,7 @@ prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 {- Takes eliza structure and converts it to a bot brain -}
 rulesCompile :: [(String, [String])] -> BotBrain
-{- TO BE WRITTEN -}
-rulesCompile _ = []
+rulesCompile _ = [];
 
 
 --------------------------------------
@@ -117,25 +116,26 @@ reductionsApply _ = id
 
 -- Replaces a wildcard in a list with the list given as the third argument
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute _ _ _ = []
-{- TO BE WRITTEN -}
-
+substitute _ [] _ = []
+substitute w (x:xs) y
+    | x == w = y ++ substitute w xs y
+    | otherwise = x : substitute w xs y
 
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _ _ _ = Nothing
-{- TO BE WRITTEN -}
-
+match _ [] [] = Just []
+match _ [] _ = Nothing
+match _ _ [] = Nothing
+match w p s
+  | head p == w = orElse (singleWildcardMatch p s) (longerWildcardMatch p s)
+  | head p == head s = match w (tail p) (tail s)
+  | otherwise = Nothing
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch (wc:ps) (x:xs) = Nothing
-{- TO BE WRITTEN -}
-longerWildcardMatch (wc:ps) (x:xs) = Nothing
-{- TO BE WRITTEN -}
-
-
+singleWildcardMatch (wc:ps) (x:xs) = mmap (const [x]) (match wc ps xs)
+longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
 -- Test cases --------------------
 
