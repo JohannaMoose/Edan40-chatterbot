@@ -28,10 +28,7 @@ type BotBrain = [(Phrase, [Phrase])]
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 {- TO BE WRITTEN -}
 {- Map the function that maps (id, pick r) over each tuple in the brain, feed it to rulesApply and return a random response -}
-stateOfMind brain = do
-    r <- randomIO :: IO Float
-    let rules = map (map2 (id, pick r)) brain
-        in return (rulesApply rules)
+stateOfMind _ = return id
 {- Written -}
 
 {- Returns a function that takes a Phrase (List of strings (words)) and
