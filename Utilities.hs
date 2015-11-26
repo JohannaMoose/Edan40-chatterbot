@@ -33,7 +33,7 @@ fix f x
    |  f x == x  = x
    |  otherwise = fix f (f x)
 
-{- Takes a percentage [0.00, 1.00) and returns the element from the list which 
+{- Takes a percentage [0.00, 1.00) and returns the element from the list which
     the supplied percentage maps to. Ex: [1,2,3] => [0.0 - 0.333..., 0.34 - 0.666..., 0.67 - 0.99] -}
 pick :: RealFrac r => r -> [a] -> a
 pick u xs = xs !! (floor.(u*).fromIntegral.length) xs

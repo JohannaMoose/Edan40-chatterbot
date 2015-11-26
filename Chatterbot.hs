@@ -26,18 +26,18 @@ type BotBrain = [(Phrase, [Phrase])]
 --------------------------------------------------------
 {- Takes a brain, and returns a function that which in turn takes phrase and returns a phrase (random response) -}
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
-{- TO BE WRITTEN -}
-{- Map the function that maps (id, pick r) over each tuple in the brain, feed it to rulesApply and return a random response -}
-stateOfMind _ = return id
-{- Written -}
+stateOfMind brain =
+  do
+    r <- randomIO :: IO Float
+    let rules = map (map2 (id, pick r)) brain
+    return (rulesApply rules)
 
 {- Returns a function that takes a Phrase (List of strings (words)) and
 returns the lookedup phrase in some dictionary,
 and applies reflect on the intermediate result before returning it.
 It applies a rule to a lookedup value. -}
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-rulesApply _ = id
+rulesApply = try . transformationsApply "*" reflect
 
 {- Takes a phrase and returns a reflected phrase -}
 reflect :: Phrase -> Phrase
@@ -62,7 +62,6 @@ reflections =
     ("you",    "me")
   ]
 
-
 ---------------------------------------------------------------------------------
 
 endOfDialog :: String -> Bool
@@ -76,8 +75,7 @@ prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 {- Takes eliza structure and converts it to a bot brain -}
 rulesCompile :: [(String, [String])] -> BotBrain
-rulesCompile _ = [];
-
+rulesCompile = (map . map2) (words . map toLower, map words)
 
 --------------------------------------
 
@@ -152,11 +150,10 @@ matchCheck = matchTest == Just testSubstitutions
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 transformationApply wc f list pattern =
-  mmap (substitute wc (snd pattern) . f)(match wc list (fst pattern))
+  mmap (substitute wc (snd pattern) . f)(match wc (fst pattern) list)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
 transformationsApply wc f (p:ps) list =
   orElse (transformationApply wc f list p)(transformationsApply wc f ps list)
-{- TO BE WRITTEN -}
