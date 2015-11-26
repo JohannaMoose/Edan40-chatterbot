@@ -41,8 +41,7 @@ rulesApply _ = id
 
 {- Takes a phrase and returns a reflected phrase -}
 reflect :: Phrase -> Phrase
-{- TO BE WRITTEN -}
-reflect = id
+reflect = (map . try) (flip lookup reflections)
 
 reflections =
   [ ("am",     "are"),
@@ -146,19 +145,18 @@ substituteCheck = substituteTest == testString
 matchTest = match '*' testPattern testString
 matchCheck = matchTest == Just testSubstitutions
 
-
-
 -------------------------------------------------------
 -- Applying patterns
 --------------------------------------------------------
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-transformationApply _ _ _ _ = Nothing
-{- TO BE WRITTEN -}
-
+transformationApply wc f list pattern =
+  mmap (substitute wc (snd pattern) . f)(match wc list (fst pattern))
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
-transformationsApply _ _ _ _ = Nothing
+transformationsApply _ _ [] _ = Nothing
+transformationsApply wc f (p:ps) list =
+  orElse (transformationApply wc f list p)(transformationsApply wc f ps list)
 {- TO BE WRITTEN -}
