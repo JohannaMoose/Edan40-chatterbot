@@ -22,7 +22,6 @@ type Phrase = [String]
 type PhrasePair = (Phrase, Phrase)
 type BotBrain = [(Phrase, [Phrase])]
 
-
 --------------------------------------------------------
 {- Takes a brain, and returns a function that which in turn takes phrase and returns a phrase (random response) -}
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
@@ -100,9 +99,7 @@ reduce = reductionsApply reductions
 
 {-  Use the fix function as a reducer with transformationsApply to reduce a phrase. -}
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
-
+reductionsApply = try . transformationsApply "*" (fix reduce)
 
 -------------------------------------------------------
 -- Match and substitute
