@@ -22,6 +22,7 @@ type Phrase = [String]
 type PhrasePair = (Phrase, Phrase)
 type BotBrain = [(Phrase, [Phrase])]
 
+
 --------------------------------------------------------
 {- Takes a brain, and returns a function that which in turn takes phrase and returns a phrase (random response) -}
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
