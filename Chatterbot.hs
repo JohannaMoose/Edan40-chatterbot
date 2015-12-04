@@ -153,5 +153,6 @@ transformationApply wc f list pattern =
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
-transformationsApply wc f (p:ps) list =
-  orElse (transformationApply wc f list p)(transformationsApply wc f ps list)
+transformationsApply wc f ps list = foldr1 orElse (map (transformationApply wc f list) ps)
+-- Using foldr1 as requested by TA, keeping orElse the, do the transpformationApply (inner parenthaises)
+-- over all the elements in the ps list (map and the trailing ps)
